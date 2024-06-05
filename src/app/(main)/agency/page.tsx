@@ -1,3 +1,4 @@
+import AgencyDetails from '@/components/forms/agency-details';
 import { getAuthUserDetails, verifyAndAcceptInvitation } from '@/lib/queries';
 import { currentUser } from '@clerk/nextjs'
 import { Plan } from '@prisma/client';
@@ -33,9 +34,9 @@ const page = async({searchParams}:{searchParams:{plan:Plan,state:string,code:str
     const authUser=await currentUser();
 
   return (
-    <div className='flex justidy-center items-center mt-4'>
+    <div className="flex justify-center items-center mt-4">
       <div className="max-w-[850px] border-[1px] p-4 rounded-xl">
-        <h1 className='text-4xl'>Create an Agency</h1>
+        <h1 className="text-4xl"> Create An Agency</h1>
         <AgencyDetails
           data={{ companyEmail: authUser?.emailAddresses[0].emailAddress }}
         />
