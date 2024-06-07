@@ -103,7 +103,7 @@ const MenuOptions = ({
           <Popover>
             <PopoverTrigger asChild>
               <Button
-                className="w-full my-4 flex items-center justify-between py-8 ml-[-9px]" 
+                className="w-full my-4 flex items-center justify-between py-8 ml-[-10px]" 
                 variant="ghost"
               >
                 <div className="flex items-center text-left gap-0.8">
