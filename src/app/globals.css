@@ -128,3 +128,10 @@ B (255 */
     transform: scale(1);
   }
 }
+
+*{
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+  display: none;
+}

@@ -3,6 +3,7 @@ import { DM_Sans, Inter } from "next/font/google";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import ModalProvider from "@/components/providers/modal-provider";
 
 const font = DM_Sans({ subsets: ["latin"] });
 
@@ -17,17 +18,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-  
-      <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className={font.className}>
-        <ThemeProvider attribute="class"
+        <ThemeProvider
+          attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange>
-          {children}
+          disableTransitionOnChange
+        >
+          <ModalProvider>{children}</ModalProvider>
         </ThemeProvider>
-        </body>
-      </html>
-    
+      </body>
+    </html>
   );
 }
