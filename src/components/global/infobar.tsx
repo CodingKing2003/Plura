@@ -78,25 +78,28 @@ const Infobar = ({ notifications, role, className, subAccountId }: Props) => {
                   className="flex flex-col gap-y-2 mb-2 overflow-x-scroll text-ellipsis"
                 >
                   <div className="flex gap-2">
-                   <Avatar>
-                   <AvatarImage
-                      src={notification.User.avatarUrl}
-                      alt="Profile Picture"
-                    />
-                    <AvatarFallback className="bg-primary">
-                      {notification.User.name.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                   </Avatar>
-                   <div className="flex flex-col">
+                    <Avatar>
+                      <AvatarImage
+                        src={notification.User.avatarUrl}
+                        alt="Profile Picture"
+                      />
+                      <AvatarFallback className="bg-primary">
+                        {notification.User.name.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
                       <p>
                         <span className="font-bold">
-                          {notification.notification.split('|')[0]}
+                          {notification.notification.split("|")[0]}
                         </span>
                         <span className="text-muted-foreground">
-                          {notification.notification.split('|')[1]}
+                          {notification.notification.split("|")[1]}
                         </span>
                         <span className="font-bold">
-                          {notification.notification.split('|')[2]}
+                          {notification.notification.split("|")[2]}
+                        </span>
+                        <span className="font-bold">
+                          {notification.notification.split("|")[3]}
                         </span>
                       </p>
                       <small className="text-xs text-muted-foreground">
@@ -107,7 +110,7 @@ const Infobar = ({ notifications, role, className, subAccountId }: Props) => {
                 </div>
               ))}
 
-{allNotifications?.length === 0 && (
+              {allNotifications?.length === 0 && (
                 <div
                   className="flex items-center justify-center text-muted-foreground"
                   mb-4
