@@ -349,7 +349,7 @@ const UserDetails = ({ id, type, subAccounts, userData }: Props) => {
                 <div className="flex flex-col gap-4">
                   {subAccounts?.map((subAccount) => {
                     const subAccountPermissionsDetails =
-                      subAccountPermissions?.Permissions.find(
+                      subAccountPermissions?.Permissions.find (
                         (p) => p.subAccountId === subAccount.id
                       )
                     return (
