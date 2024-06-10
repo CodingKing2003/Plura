@@ -540,3 +540,12 @@ export const deleteMedia = async (mediaId: string) => {
   })
   return response
 }
+
+export const getPipelineDetails = async (pipelineId: string) => {
+  const response = await db.pipeline.findUnique({
+    where: {
+      id: pipelineId,
+    },
+  })
+  return response
+}
