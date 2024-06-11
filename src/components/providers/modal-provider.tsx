@@ -8,6 +8,7 @@ interface ModalProviderProps {
 }
 
 export type ModalData = {
+  ticket: any;
   user?: User;
   agency?: Agency;
 };

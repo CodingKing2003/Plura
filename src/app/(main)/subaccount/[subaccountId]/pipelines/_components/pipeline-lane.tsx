@@ -2,7 +2,7 @@
 import CreateLaneForm from '@/components/forms/lane-form'
 
 import { useModal } from "@/components/providers/modal-provider";
-import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -21,6 +21,7 @@ import { Draggable, Droppable } from "react-beautiful-dnd";
 import PipelineTicket from "./pipeline-ticket";
 import CustomModal from "@/components/global/custom-modal";
 import TicketForm from "@/components/forms/ticket-form";
+import { deleteLane, saveActivityLogsNotification } from '@/lib/queries';
 
 interface PipelineLaneProps {
   setAllTickets: Dispatch<SetStateAction<TicketWithTags>>;
@@ -93,6 +94,20 @@ const PipelineLane = ({
     )
   }
 
+  const handleDeleteLane = async () => {
+    try {
+      const response = await deleteLane(laneDetails.id)
+      await saveActivityLogsNotification({
+        agencyId: undefined,
+        description: `Deleted a lane | ${response?.name}`,
+        subaccountId,
+      })
+      router.refresh()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <Draggable
       draggableId={laneDetails.id.toString()}
@@ -161,7 +176,14 @@ const PipelineLane = ({
                           className="mt-2"
                         >
                           {tickets.map((ticket, index) => (
-                            <PipelineTicket />
+                              <PipelineTicket
+                              allTickets={allTickets}
+                              setAllTickets={setAllTickets}
+                              subaccountId={subaccountId}
+                              ticket={ticket}
+                              key={ticket.id.toString()}
+                              index={index}
+                            />
                           ))}
                           {provided.placeholder}
                         </div>
@@ -196,6 +218,26 @@ const PipelineLane = ({
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </div>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your account and remove your data from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter className="flex items-center">
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-destructive"
+                      onClick={handleDeleteLane}
+                    >
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
               </DropdownMenu>
             </AlertDialog>
           </div>
