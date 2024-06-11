@@ -7,6 +7,7 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -17,7 +18,7 @@ import { cn } from '@/lib/utils'
 import { useModal } from '@/components/providers/modal-provider'
 import { Pipeline } from '@prisma/client'
 import { Check, ChevronsUpDown, Plus } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import React from 'react'
 
 type Props = {
@@ -27,10 +28,9 @@ type Props = {
 }
 
 const PipelineInfoBar = ({ pipelineId, pipelines, subAccountId }: Props) => {
-  const { setOpen: setOpenModal } = useModal()
+  const { setOpen: setOpenModal, setClose } = useModal()
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState(pipelineId)
-  const router = useRouter()
 
   const handleClickCreatePipeline = () => {
     setOpenModal(
@@ -41,12 +41,6 @@ const PipelineInfoBar = ({ pipelineId, pipelines, subAccountId }: Props) => {
         <CreatePipelineForm subAccountId={subAccountId} />
       </CustomModal>
     )
-  }
-
-  const handleSelectPipeline = (pipelineId: string) => {
-    setValue(pipelineId)
-    setOpen(false)
-    router.push(`/subaccount/${subAccountId}/pipelines/${pipelineId}`)
   }
 
   return (
@@ -69,36 +63,49 @@ const PipelineInfoBar = ({ pipelineId, pipelines, subAccountId }: Props) => {
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
+
           <PopoverContent className="w-[200px] p-0">
-            <Command>
+            <Command >
               <CommandEmpty>No pipelines found.</CommandEmpty>
-              <CommandGroup>
+              <CommandGroup >
+
+
+                <CommandList>
                 {pipelines.map((pipeline) => (
-                  <CommandItem
+                  <Link
                     key={pipeline.id}
-                    value={pipeline.id}
-                    onSelect={() => handleSelectPipeline(pipeline.id)}
+                    href={`/subaccount/${subAccountId}/pipelines/${pipeline.id}`}
                   >
-                    <Check
-                      className={cn(
-                        'mr-2 h-4 w-4',
-                        value === pipeline.id ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                    {pipeline.name}
-                  </CommandItem>
+                    
+                    <CommandItem
+                      key={pipeline.id}
+                      value={pipeline.id}
+                      onSelect={(currentValue) => {
+                        setValue(currentValue)
+                        setOpen(false)
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          'mr-2 h-4 w-4',
+                          value === pipeline.id ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                      
+                      {pipeline.name}
+                    </CommandItem>
+                  </Link>
                 ))}
-              </CommandGroup>
-              <div className="p-2">
+                </CommandList>
                 <Button
                   variant="secondary"
-                  className="flex gap-2 w-full mt-2"
+                  className="flex gap-2 w-full mt-4"
                   onClick={handleClickCreatePipeline}
                 >
                   <Plus size={15} />
                   Create Pipeline
                 </Button>
-              </div>
+              </CommandGroup>
             </Command>
           </PopoverContent>
         </Popover>
