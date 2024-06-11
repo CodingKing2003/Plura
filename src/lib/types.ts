@@ -3,6 +3,7 @@ import {
   getAuthUserDetails,
   getMedia,
   getPipelineDetails,
+  getTicketsWithTags,
   getUserPermissions,
 } from "./queries";
 import { db } from "./db";
@@ -72,3 +73,6 @@ export type PipelineDetailsWithLanesCardsTagsTickets = Prisma.PromiseReturnType<
 export const LaneFormSchema = z.object({
   name: z.string().min(1),
 })
+
+
+export type TicketWithTags = Prisma.PromiseReturnType<typeof getTicketsWithTags>
