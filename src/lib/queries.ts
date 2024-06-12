@@ -777,17 +777,28 @@ export const upsertTag = async (
     where: { id: tag.id || v4(), subAccountId: subaccountId },
     update: tag,
     create: { ...tag, subAccountId: subaccountId },
-  })
+  });
 
-  return response
-}
+  return response;
+};
 
 export const deleteTicket = async (ticketId: string) => {
   const response = await db.ticket.delete({
     where: {
       id: ticketId,
     },
-  })
+  });
 
-  return response
-}
+  return response;
+};
+
+export const upsertContact = async (
+  contact: Prisma.ContactUncheckedCreateInput
+) => {
+  const response = await db.contact.upsert({
+    where: { id: contact.id || v4() },
+    update: contact,
+    create: contact,
+  });
+  return response;
+};
