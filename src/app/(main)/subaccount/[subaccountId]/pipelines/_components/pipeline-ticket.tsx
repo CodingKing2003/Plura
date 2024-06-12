@@ -1,5 +1,3 @@
-"use client";
-
 import TicketForm from '@/components/forms/ticket-form'
 import CustomModal from '@/components/global/custom-modal'
 import TagComponent from '@/components/global/tag'

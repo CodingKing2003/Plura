@@ -1,13 +1,13 @@
 'use client'
 import CreatePipelineForm from '@/components/forms/create-pipeline-form'
 import CustomModal from '@/components/global/custom-modal'
+import { useModal } from '@/components/providers/modal-provider'
 import { Button } from '@/components/ui/button'
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandItem,
-  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -15,7 +15,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import { useModal } from '@/components/providers/modal-provider'
+
 import { Pipeline } from '@prisma/client'
 import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 import Link from 'next/link'
@@ -63,20 +63,15 @@ const PipelineInfoBar = ({ pipelineId, pipelines, subAccountId }: Props) => {
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
-
           <PopoverContent className="w-[200px] p-0">
-            <Command >
+            <Command>
               <CommandEmpty>No pipelines found.</CommandEmpty>
-              <CommandGroup >
-
-
-                <CommandList>
+              <CommandGroup>
                 {pipelines.map((pipeline) => (
                   <Link
                     key={pipeline.id}
                     href={`/subaccount/${subAccountId}/pipelines/${pipeline.id}`}
                   >
-                    
                     <CommandItem
                       key={pipeline.id}
                       value={pipeline.id}
@@ -91,12 +86,10 @@ const PipelineInfoBar = ({ pipelineId, pipelines, subAccountId }: Props) => {
                           value === pipeline.id ? 'opacity-100' : 'opacity-0'
                         )}
                       />
-                      
                       {pipeline.name}
                     </CommandItem>
                   </Link>
                 ))}
-                </CommandList>
                 <Button
                   variant="secondary"
                   className="flex gap-2 w-full mt-4"
