@@ -682,22 +682,22 @@ export const getTicketsWithTags = async (pipelineId: string) => {
 };
 
 export const deleteLane = async (laneId: string) => {
-  const resposne = await db.lane.delete({ where: { id: laneId } })
-  return resposne
-}
+  const resposne = await db.lane.delete({ where: { id: laneId } });
+  return resposne;
+};
 
 export const upsertTicket = async (
   ticket: Prisma.TicketUncheckedCreateInput,
   tags: Tag[]
 ) => {
-  let order: number
+  let order: number;
   if (!ticket.order) {
     const tickets = await db.ticket.findMany({
       where: { laneId: ticket.laneId },
-    })
-    order = tickets.length
+    });
+    order = tickets.length;
   } else {
-    order = ticket.order
+    order = ticket.order;
   }
 
   const response = await db.ticket.upsert({
@@ -712,35 +712,33 @@ export const upsertTicket = async (
       Tags: true,
       Lane: true,
     },
-  })
-
-  return response
-}
-
-
-export const getSubAccountTeamMembers=async(subaccountId:string)=>{
-  const response=await db.user.findMany({
-    where:{
-      Agency:{
-        SubAccount:{
-          some:{
-            id:subaccountId
-          }
-        }
-      },
-      role:"SUBACCOUNT_USER",
-      Permissions:{
-        some:{
-          subAccountId:subaccountId,
-          access:true
-        }
-      }
-    }
-  })
+  });
 
   return response;
+};
 
-}
+export const getSubAccountTeamMembers = async (subaccountId: string) => {
+  const response = await db.user.findMany({
+    where: {
+      Agency: {
+        SubAccount: {
+          some: {
+            id: subaccountId,
+          },
+        },
+      },
+      role: "SUBACCOUNT_USER",
+      Permissions: {
+        some: {
+          subAccountId: subaccountId,
+          access: true,
+        },
+      },
+    },
+  });
+
+  return response;
+};
 
 export const searchContacts = async (searchTerms: string) => {
   const response = await db.contact.findMany({
@@ -749,6 +747,37 @@ export const searchContacts = async (searchTerms: string) => {
         contains: searchTerms,
       },
     },
+  });
+  return response;
+};
+
+export const getTagsForSubaccount = async (subaccountId: string) => {
+  const response = await db.subAccount.findUnique({
+    where: {
+      id: subaccountId,
+    },
+    select: {
+      Tags: true,
+    },
+  });
+
+  return response;
+};
+
+export const deleteTag = async (tagId: string) => {
+  const response = await db.tag.delete({ where: { id: tagId } });
+  return response;
+};
+
+export const upsertTag = async (
+  subaccountId: string,
+  tag: Prisma.TagUncheckedCreateInput
+) => {
+  const response = await db.tag.upsert({
+    where: { id: tag.id || v4(), subAccountId: subaccountId },
+    update: tag,
+    create: { ...tag, subAccountId: subaccountId },
   })
+
   return response
 }
