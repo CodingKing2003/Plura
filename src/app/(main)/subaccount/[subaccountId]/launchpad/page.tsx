@@ -1,37 +1,37 @@
-import BlurPage from "@/components/global/blur-page";
-import { Button } from "@/components/ui/button";
+import BlurPage from '@/components/global/blur-page'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { db } from "@/lib/db";
-import { CheckCircleIcon } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+} from '@/components/ui/card'
+import { db } from '@/lib/db'
+import { stripe } from '@/lib/stripe'
+import { getStripeOAuthLink } from '@/lib/utils'
+import { CheckCircleIcon } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import React from 'react'
 
 type Props = {
   searchParams: {
-    state: string;
-    code: string;
-  };
-  params: {
-    subaccountId: string;
-  };
-};
+    state: string
+    code: string
+  }
+  params: { subaccountId: string }
+}
 
-const LaunchpadPage = async ({ searchParams, params }: Props) => {
+const LaunchPad = async ({ params, searchParams }: Props) => {
   const subaccountDetails = await db.subAccount.findUnique({
     where: {
       id: params.subaccountId,
     },
-  });
+  })
 
   if (!subaccountDetails) {
-    return;
+    return
   }
 
   const allDetailsExist =
@@ -42,12 +42,38 @@ const LaunchpadPage = async ({ searchParams, params }: Props) => {
     subaccountDetails.companyPhone &&
     subaccountDetails.country &&
     subaccountDetails.name &&
-    subaccountDetails.state;
+    subaccountDetails.state
+
+  const stripeOAuthLink = getStripeOAuthLink(
+    'subaccount',
+    `launchpad___${subaccountDetails.id}`
+  )
+
+  let connectedStripeAccount = false
+
+  if (searchParams.code) {
+    if (!subaccountDetails.connectAccountId) {
+      try {
+        const response = await stripe.oauth.token({
+          grant_type: 'authorization_code',
+          code: searchParams.code,
+        })
+        await db.subAccount.update({
+          where: { id: params.subaccountId },
+          data: { connectAccountId: response.stripe_user_id },
+        })
+        connectedStripeAccount = true
+      } catch (error) {
+        console.log('🔴 Could not connect stripe account', error)
+      }
+    }
+  }
+
   return (
     <BlurPage>
       <div className="flex flex-col justify-center items-center">
         <div className="w-full h-full max-w-[800px]">
-          <Card className="border-none">
+          <Card className="border-none ">
             <CardHeader>
               <CardTitle>Lets get started!</CardTitle>
               <CardDescription>
@@ -55,9 +81,9 @@ const LaunchpadPage = async ({ searchParams, params }: Props) => {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
-                <div className="flex justify-between items-center w-full h-20 border p-4 rounded-lg ">
-                    <div className="flex items-center gap-4">
-                    <Image
+              <div className="flex justify-between items-center w-full h-20 border p-4 rounded-lg ">
+                <div className="flex items-center gap-4">
+                  <Image
                     src="/appstore.png"
                     alt="App logo"
                     height={80}
@@ -65,10 +91,10 @@ const LaunchpadPage = async ({ searchParams, params }: Props) => {
                     className="rounded-md object-contain"
                   />
                   <p>Save the website as a shortcut on your mobile devide</p>
-                    </div>
-                    <Button>Start</Button>
                 </div>
-                <div className="flex justify-between items-center w-full h-20 border p-4 rounded-lg">
+                <Button>Start</Button>
+              </div>
+              <div className="flex justify-between items-center w-full h-20 border p-4 rounded-lg">
                 <div className="flex items-center gap-4">
                   <Image
                     src="/stripelogo.png"
@@ -82,9 +108,22 @@ const LaunchpadPage = async ({ searchParams, params }: Props) => {
                     used to run payouts.
                   </p>
                 </div>
-                </div>
-
-                <div className="flex justify-between items-center w-full h-20 border p-4 rounded-lg">
+                {subaccountDetails.connectAccountId ||
+                connectedStripeAccount ? (
+                  <CheckCircleIcon
+                    size={50}
+                    className=" text-primary p-2 flex-shrink-0"
+                  />
+                ) : (
+                  <Link
+                    className="bg-primary py-2 px-4 rounded-md text-white"
+                    href={stripeOAuthLink}
+                  >
+                    Start
+                  </Link>
+                )}
+              </div>
+              <div className="flex justify-between items-center w-full h-20 border p-4 rounded-lg">
                 <div className="flex items-center gap-4">
                   <Image
                     src={subaccountDetails.subAccountLogo}
@@ -109,13 +148,12 @@ const LaunchpadPage = async ({ searchParams, params }: Props) => {
                   </Link>
                 )}
               </div>
-              
             </CardContent>
           </Card>
         </div>
       </div>
     </BlurPage>
-  );
-};
+  )
+}
 
-export default LaunchpadPage;
+export default LaunchPad
