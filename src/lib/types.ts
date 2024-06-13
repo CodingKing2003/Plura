@@ -1,5 +1,6 @@
 import { Contact, Lane, Prisma, Role, Tag, Ticket, User } from "@prisma/client";
 import {
+  _getTicketsWithAllRelations,
   getAuthUserDetails,
   getMedia,
   getPipelineDetails,
@@ -8,6 +9,7 @@ import {
 } from "./queries";
 import { db } from "./db";
 import { z } from "zod";
+import Stripe from "stripe";
 
 export type NotificationWithUser =
   | ({
@@ -92,6 +94,10 @@ export const ContactUserFormSchema = z.object({
   email: z.string().email(),
 })
 
+
+export type TicketDetails = Prisma.PromiseReturnType<
+  typeof _getTicketsWithAllRelations
+> 
 export type Address = {
   city: string
   country: string
@@ -111,3 +117,5 @@ export type StripeCustomerType = {
   shipping: ShippingInfo
   address: Address
 }
+
+export type PricesList = Stripe.ApiList<Stripe.Price>
