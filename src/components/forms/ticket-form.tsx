@@ -45,6 +45,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '../ui/command'
 import { cn } from '@/lib/utils'
 import Loading from '../global/loading'
@@ -303,6 +304,7 @@ const TicketForm = ({ getNewTicket, laneId, subaccountId }: Props) => {
                   />
                   <CommandEmpty>No Customer found.</CommandEmpty>
                   <CommandGroup>
+                    <CommandList>
                     {contactList.map((c) => (
                       <CommandItem
                         key={c.id}
@@ -322,6 +324,7 @@ const TicketForm = ({ getNewTicket, laneId, subaccountId }: Props) => {
                         />
                       </CommandItem>
                     ))}
+                    </CommandList>
                   </CommandGroup>
                 </Command>
               </PopoverContent>
