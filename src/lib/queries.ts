@@ -817,19 +817,13 @@ export const _getTicketsWithAllRelations = async (laneId: string) => {
   return response
 }
 
-export const getFunnels = async (funnelId: string) => {
-  const funnel = await db.funnel.findUnique({
-    where: { id: funnelId },
-    include: {
-      FunnelPages: {
-        orderBy: {
-          order: 'asc',
-        },
-      },
-    },
+export const getFunnels = async (subacountId: string) => {
+  const funnels = await db.funnel.findMany({
+    where: { subAccountId: subacountId },
+    include: { FunnelPages: true },
   })
 
-  return funnel
+  return funnels
 }
 
 export const upsertFunnel = async (

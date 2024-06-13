@@ -1,6 +1,11 @@
 import React from 'react'
 
-const page = () => {
+type Props = {
+    params: { funnelId: string; subaccountId: string }
+  }
+
+const page = ({params}:Props) => {
+    
   return (
     <div>page</div>
   )
