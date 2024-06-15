@@ -1,5 +1,5 @@
 'use client'
-import { EditorElement, useEditor } from '@/providers/editor/editor-provider'
+import { EditorElement, useEditor } from '@/components/providers/editor/editor-provider'
 import React from 'react'
 import RecursiveElement from './recursive'
 
